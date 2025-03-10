@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import datetime
 
 # Diccionario para almacenar clientes
@@ -121,17 +122,23 @@ def menu():
         print("7. Salir")
         opcion = input("Selecciona una opción: ")
 
+        if len(sys.argv) > 1:
+            opcion = sys.argv[1]  # Primera opción como argumento
+        else:
+            opcion = input("Selecciona una opción: ")
+
         if opcion == "1":
             listar_clientes()
         elif opcion == "2":
-            nombre = input("Introduce el nombre del cliente: ")
+            nombre = sys.argv[2] if len(sys.argv) > 2 else input("Introduce el nombre del cliente: ")
             leer_cliente(nombre)
         elif opcion == "3":
-            nombre = input("Introduce el nombre del cliente nuevo: ")
-            direccion = input("Introduce la dirección del cliente: ")
-            telefono = input("Introduce el teléfono del cliente: ")
-            correo = input("Introduce el correo electrónico del cliente: ")
-            descripcion = input("Introduce la descripción del servicio: ")
+            # Aquí también puedes obtener argumentos
+            nombre = sys.argv[2] if len(sys.argv) > 2 else input("Introduce el nombre del cliente nuevo: ")
+            direccion = sys.argv[3] if len(sys.argv) > 3 else input("Introduce la dirección del cliente: ")
+            telefono = sys.argv[4] if len(sys.argv) > 4 else input("Introduce el teléfono del cliente: ")
+            correo = sys.argv[5] if len(sys.argv) > 5 else input("Introduce el correo electrónico del cliente: ")
+            descripcion = sys.argv[6] if len(sys.argv) > 6 else input("Introduce la descripción del servicio: ")
             agregar_cliente(nombre, descripcion, direccion, telefono, correo)
         elif opcion == "4":
             nombre = input("Introduce el nombre del cliente existente: ")
