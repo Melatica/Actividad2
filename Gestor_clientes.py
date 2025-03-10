@@ -25,7 +25,7 @@ def cargar_clientes():
                 }
 
 # Función para agregar un cliente nuevo
-def agregar_cliente(nombre, descripcion, direccion, telefono, correo):
+def crear_cliente(nombre, descripcion, direccion, telefono, correo):
     if nombre in clientes:
         print("El cliente ya existe. Actualizando descripción...")
         clientes[nombre]['descripciones'].append(descripcion)
@@ -125,6 +125,7 @@ def menu():
             print("No se puede leer entrada. Asegúrate de proporcionar una entrada válida.")
             return  # Salir del menú en caso de error
 
+
         if opcion == "1":
             listar_clientes()
         elif opcion == "2":
@@ -136,7 +137,7 @@ def menu():
             telefono = input("Introduce el teléfono del cliente: ")
             correo = input("Introduce el correo electrónico del cliente: ")
             descripcion = input("Introduce la descripción del servicio: ")
-            agregar_cliente(nombre, descripcion, direccion, telefono, correo)
+            crear_cliente(nombre, descripcion, direccion, telefono, correo)
         elif opcion == "4":
             nombre = input("Introduce el nombre del cliente existente: ")
             descripcion = input("Introduce la descripción del nuevo servicio: ")
