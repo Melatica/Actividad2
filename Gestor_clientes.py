@@ -1,5 +1,4 @@
 import os
-import sys
 from datetime import datetime
 
 # Diccionario para almacenar clientes
