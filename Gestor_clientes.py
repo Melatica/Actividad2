@@ -117,28 +117,26 @@ def menu():
         print("2. Ver cliente")
         print("3. Crear cliente nuevo")
         print("4. Agregar servicio a cliente existente")
-        print("5. Modificar cliente existente")  # Nueva opción
+        print("5. Modificar cliente existente")
         print("6. Eliminar cliente")
         print("7. Salir")
-        opcion = input("Selecciona una opción: ")
-
-        if len(sys.argv) > 1:
-            opcion = sys.argv[1]  # Primera opción como argumento
-        else:
+        try:
             opcion = input("Selecciona una opción: ")
+        except EOFError:
+            print("No se puede leer entrada. Asegúrate de proporcionar una entrada válida.")
+            return  # Salir del menú en caso de error
 
         if opcion == "1":
             listar_clientes()
         elif opcion == "2":
-            nombre = sys.argv[2] if len(sys.argv) > 2 else input("Introduce el nombre del cliente: ")
+            nombre = input("Introduce el nombre del cliente: ")
             leer_cliente(nombre)
         elif opcion == "3":
-            # Aquí también puedes obtener argumentos
-            nombre = sys.argv[2] if len(sys.argv) > 2 else input("Introduce el nombre del cliente nuevo: ")
-            direccion = sys.argv[3] if len(sys.argv) > 3 else input("Introduce la dirección del cliente: ")
-            telefono = sys.argv[4] if len(sys.argv) > 4 else input("Introduce el teléfono del cliente: ")
-            correo = sys.argv[5] if len(sys.argv) > 5 else input("Introduce el correo electrónico del cliente: ")
-            descripcion = sys.argv[6] if len(sys.argv) > 6 else input("Introduce la descripción del servicio: ")
+            nombre = input("Introduce el nombre del cliente nuevo: ")
+            direccion = input("Introduce la dirección del cliente: ")
+            telefono = input("Introduce el teléfono del cliente: ")
+            correo = input("Introduce el correo electrónico del cliente: ")
+            descripcion = input("Introduce la descripción del servicio: ")
             agregar_cliente(nombre, descripcion, direccion, telefono, correo)
         elif opcion == "4":
             nombre = input("Introduce el nombre del cliente existente: ")
@@ -148,7 +146,7 @@ def menu():
                 guardar_cliente(nombre)
             else:
                 print("Cliente no encontrado.")
-        elif opcion == "5":  # Nueva opción
+        elif opcion == "5":
             nombre = input("Introduce el nombre del cliente a modificar: ")
             modificar_cliente(nombre)
         elif opcion == "6":
