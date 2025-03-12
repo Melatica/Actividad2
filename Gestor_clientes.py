@@ -37,6 +37,8 @@ def cargar_clientes():
 # Función para guardar todos los clientes en un archivo único
 def guardar_todos_los_clientes():
     with open(archivo_clientes, "w") as file:
+        # Guardar el valor original de sys.stdout
+        original_stdout = sys.stdout
         # Redirigir salida estándar al archivo
         sys.stdout = file
         for nombre, datos in clientes.items():
@@ -50,7 +52,7 @@ def guardar_todos_los_clientes():
                 print(f"- {descripcion}")
             print()  # Espacio entre clientes
         # Restaurar salida estándar a la consola
-        sys.stdout = sys.__stdout__
+        sys.stdout = original_stdout
     print(f"Información guardada en {archivo_clientes}")
 
 # Función para crear o actualizar un cliente
