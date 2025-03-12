@@ -133,41 +133,44 @@ def leer_cliente(nombre):
     else:
         print("Cliente no encontrado.")
 
-# Menú principal
-def menu():
+# Modify menu function to accept inputs
+def menu(args=None):
     cargar_clientes()
     while True:
-        print("\nMenú Clientes SKY:")
-        print("1. Ver lista de clientes")
-        print("2. Ver cliente")
-        print("3. Crear cliente nuevo")
-        print("4. Agregar servicio a cliente existente")
-        print("5. Modificar cliente existente")
-        print("6. Eliminar cliente")
-        print("7. Salir")
-        opcion = input("Selecciona una opción: ")
+        if args:
+            opcion = args.pop(0) if args else "7"  # Default to exit
+        else:
+            print("\nMenú Clientes SKY:")
+            print("1. Ver lista de clientes")
+            print("2. Ver cliente")
+            print("3. Crear cliente nuevo")
+            print("4. Agregar servicio a cliente existente")
+            print("5. Modificar cliente existente")
+            print("6. Eliminar cliente")
+            print("7. Salir")
+            opcion = input("Selecciona una opción: ")
 
         if opcion == "1":
             listar_clientes()
         elif opcion == "2":
-            nombre = input("Introduce el nombre del cliente: ")
+            nombre = input("Introduce el nombre del cliente: ") if not args else args.pop(0)
             leer_cliente(nombre)
         elif opcion == "3":
-            nombre = input("Introduce el nombre del cliente nuevo: ")
-            direccion = input("Introduce la dirección del cliente: ")
-            telefono = input("Introduce el teléfono del cliente: ")
-            correo = input("Introduce el correo electrónico del cliente: ")
-            descripcion = input("Introduce la descripción del servicio: ")
+            nombre = input("Introduce el nombre del cliente nuevo: ") if not args else args.pop(0)
+            direccion = input("Introduce la dirección del cliente: ") if not args else args.pop(0)
+            telefono = input("Introduce el teléfono del cliente: ") if not args else args.pop(0)
+            correo = input("Introduce el correo electrónico del cliente: ") if not args else args.pop(0)
+            descripcion = input("Introduce la descripción del servicio: ") if not args else args.pop(0)
             crear_cliente(nombre, descripcion, direccion, telefono, correo)
         elif opcion == "4":
-            nombre = input("Introduce el nombre del cliente: ")
-            descripcion = input("Introduce la descripción del nuevo servicio: ")
+            nombre = input("Introduce el nombre del cliente: ") if not args else args.pop(0)
+            descripcion = input("Introduce la descripción del nuevo servicio: ") if not args else args.pop(0)
             agregar_servicio(nombre, descripcion)
         elif opcion == "5":
-            nombre = input("Introduce el nombre del cliente a modificar: ")
+            nombre = input("Introduce el nombre del cliente a modificar: ") if not args else args.pop(0)
             modificar_cliente(nombre)
         elif opcion == "6":
-            nombre = input("Introduce el nombre del cliente a eliminar: ")
+            nombre = input("Introduce el nombre del cliente a eliminar: ") if not args else args.pop(0)
             eliminar_cliente(nombre)
         elif opcion == "7":
             print("Saliendo del programa...")
