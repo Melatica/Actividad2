@@ -1,30 +1,59 @@
+import sys
 import os
 from datetime import datetime
 
 # Diccionario para almacenar clientes
 clientes = {}
 
-# Función para cargar datos de clientes desde archivos
-def cargar_clientes():
-    for archivo in os.listdir():
-        if archivo.endswith(".txt"):
-            with open(archivo, "r") as file:
-                nombre = archivo.replace(".txt", "")
-                direccion = file.readline().split(": ")[1].strip()
-                telefono = file.readline().split(": ")[1].strip()
-                correo = file.readline().split(": ")[1].strip()
-                fecha_creacion = file.readline().split(": ")[1].strip()
-                file.readline()  # Leer la línea "Descripciones:"
-                descripciones = [linea.strip().replace("- ", "") for linea in file]
-                clientes[nombre] = {
-                    'direccion': direccion,
-                    'telefono': telefono,
-                    'correo': correo,
-                    'fecha_creacion': fecha_creacion,
-                    'descripciones': descripciones
-                }
+# Archivo único para guardar toda la información de los clientes
+archivo_clientes = "clientes_registros.txt"
 
-# Función para agregar un cliente nuevo
+# Función para cargar datos de clientes desde el archivo único
+def cargar_clientes():
+    if os.path.exists(archivo_clientes):
+        with open(archivo_clientes, "r") as file:
+            cliente_actual = None
+            for linea in file:
+                if linea.startswith("Nombre: "):
+                    cliente_actual = linea.split(": ")[1].strip()
+                    clientes[cliente_actual] = {
+                        'direccion': "",
+                        'telefono': "",
+                        'correo': "",
+                        'fecha_creacion': "",
+                        'descripciones': []
+                    }
+                elif linea.startswith("Dirección: "):
+                    clientes[cliente_actual]['direccion'] = linea.split(": ")[1].strip()
+                elif linea.startswith("Teléfono: "):
+                    clientes[cliente_actual]['telefono'] = linea.split(": ")[1].strip()
+                elif linea.startswith("Correo: "):
+                    clientes[cliente_actual]['correo'] = linea.split(": ")[1].strip()
+                elif linea.startswith("Fecha de Creación: "):
+                    clientes[cliente_actual]['fecha_creacion'] = linea.split(": ")[1].strip()
+                elif linea.startswith("- "):
+                    clientes[cliente_actual]['descripciones'].append(linea.strip().replace("- ", ""))
+
+# Función para guardar todos los clientes en un archivo único
+def guardar_todos_los_clientes():
+    with open(archivo_clientes, "w") as file:
+        # Redirigir salida estándar al archivo
+        sys.stdout = file
+        for nombre, datos in clientes.items():
+            print(f"Nombre: {nombre}")
+            print(f"Dirección: {datos['direccion']}")
+            print(f"Teléfono: {datos['telefono']}")
+            print(f"Correo: {datos['correo']}")
+            print(f"Fecha de Creación: {datos['fecha_creacion']}")
+            print("Descripciones:")
+            for descripcion in datos['descripciones']:
+                print(f"- {descripcion}")
+            print()  # Espacio entre clientes
+        # Restaurar salida estándar a la consola
+        sys.stdout = sys.__stdout__
+    print(f"Información guardada en {archivo_clientes}")
+
+# Función para crear o actualizar un cliente
 def crear_cliente(nombre, descripcion, direccion, telefono, correo):
     if nombre in clientes:
         print("El cliente ya existe. Actualizando descripción...")
@@ -32,28 +61,24 @@ def crear_cliente(nombre, descripcion, direccion, telefono, correo):
     else:
         print("Creando un nuevo cliente...")
         clientes[nombre] = {
-            'descripciones': [descripcion],
             'direccion': direccion,
             'telefono': telefono,
             'correo': correo,
-            'fecha_creacion': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'fecha_creacion': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'descripciones': [descripcion]
         }
-    guardar_cliente(nombre)
+    guardar_todos_los_clientes()
 
-# Función para guardar cliente en un archivo
-def guardar_cliente(nombre):
-    with open(f"{nombre}.txt", "w") as file:
-        file.write(f"Nombre: {nombre}\n")
-        file.write(f"Dirección: {clientes[nombre]['direccion']}\n")
-        file.write(f"Teléfono: {clientes[nombre]['telefono']}\n")
-        file.write(f"Correo: {clientes[nombre]['correo']}\n")
-        file.write(f"Fecha de Creación: {clientes[nombre]['fecha_creacion']}\n")
-        file.write("Descripciones:\n")
-        for descripcion in clientes[nombre]['descripciones']:
-            file.write(f"- {descripcion}\n")
-    print(f"Información guardada en {nombre}.txt")
+# Función para agregar un servicio a cliente existente
+def agregar_servicio(nombre, descripcion):
+    if nombre in clientes:
+        clientes[nombre]['descripciones'].append(descripcion)
+        guardar_todos_los_clientes()
+        print(f"Servicio agregado al cliente {nombre}.")
+    else:
+        print("Cliente no encontrado.")
 
-# Función para modificar la información de un cliente existente
+# Función para modificar información de un cliente existente
 def modificar_cliente(nombre):
     if nombre in clientes:
         print(f"Información actual del cliente {nombre}:")
@@ -69,13 +94,30 @@ def modificar_cliente(nombre):
         clientes[nombre]['telefono'] = nuevo_telefono
         clientes[nombre]['correo'] = nuevo_correo
 
-        # Guardar cambios en el archivo
-        guardar_cliente(nombre)
-        print("Información actualizada correctamente.")
+        guardar_todos_los_clientes()
+        print(f"Información del cliente {nombre} modificada correctamente.")
     else:
         print("Cliente no encontrado.")
 
-# Función para leer la información de un cliente
+# Función para eliminar un cliente
+def eliminar_cliente(nombre):
+    if nombre in clientes:
+        del clientes[nombre]
+        guardar_todos_los_clientes()
+        print(f"Cliente {nombre} eliminado.")
+    else:
+        print("Cliente no encontrado.")
+
+# Función para listar los clientes
+def listar_clientes():
+    if clientes:
+        print("Lista de clientes:")
+        for cliente in clientes:
+            print(f"- {cliente}")
+    else:
+        print("No hay clientes registrados.")
+
+# Función para leer un cliente específico
 def leer_cliente(nombre):
     if nombre in clientes:
         print(f"Información del cliente {nombre}:")
@@ -89,24 +131,6 @@ def leer_cliente(nombre):
     else:
         print("Cliente no encontrado.")
 
-# Función para eliminar un cliente
-def eliminar_cliente(nombre):
-    if nombre in clientes:
-        os.remove(f"{nombre}.txt")
-        del clientes[nombre]
-        print(f"Cliente {nombre} eliminado.")
-    else:
-        print("Cliente no encontrado.")
-
-# Función para ver la lista de clientes
-def listar_clientes():
-    if clientes:
-        print("Lista de clientes:")
-        for cliente in clientes:
-            print(f"- {cliente}")
-    else:
-        print("No hay clientes registrados.")
-
 # Menú principal
 def menu():
     cargar_clientes()
@@ -119,12 +143,7 @@ def menu():
         print("5. Modificar cliente existente")
         print("6. Eliminar cliente")
         print("7. Salir")
-        try:
-            opcion = input("Selecciona una opción: ")
-        except EOFError:
-            print("No se puede leer entrada. Asegúrate de proporcionar una entrada válida.")
-            return  # Salir del menú en caso de error
-
+        opcion = input("Selecciona una opción: ")
 
         if opcion == "1":
             listar_clientes()
@@ -139,13 +158,9 @@ def menu():
             descripcion = input("Introduce la descripción del servicio: ")
             crear_cliente(nombre, descripcion, direccion, telefono, correo)
         elif opcion == "4":
-            nombre = input("Introduce el nombre del cliente existente: ")
+            nombre = input("Introduce el nombre del cliente: ")
             descripcion = input("Introduce la descripción del nuevo servicio: ")
-            if nombre in clientes:
-                clientes[nombre]['descripciones'].append(descripcion)
-                guardar_cliente(nombre)
-            else:
-                print("Cliente no encontrado.")
+            agregar_servicio(nombre, descripcion)
         elif opcion == "5":
             nombre = input("Introduce el nombre del cliente a modificar: ")
             modificar_cliente(nombre)
@@ -159,4 +174,4 @@ def menu():
             print("Opción no válida. Inténtalo de nuevo.")
 
 # Ejecución del programa
-menu ()
+menu()
