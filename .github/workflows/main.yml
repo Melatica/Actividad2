@@ -45,7 +45,7 @@ jobs:
     # Paso 5: Crear un cliente de prueba
     - name: Crear cliente de prueba
       run: |
-        python Gestor_clientes.py crear "ClientePrueba" "Av. Ejemplo 123" "555-1234" "123@hotmail.com" "10/03/2024" "TV Básico"
+        python Gestor_clientes.py crear "ClientePrueba" "Av. Ejemplo 123" "555-1234" "123@hotmail.com" "TV Básico"
     
     # Paso 6: Verificar que el cliente se creó correctamente
     - name: Verificar cliente creado
